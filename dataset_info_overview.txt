@@ -1,0 +1,1048 @@
+Brief Introduction of the Dataset
+1. session_id
+Simple explanation: Unique identifier for each charging event
+Categorical/Numerical: Categorical
+Unique_values: IND_BEV_100001, IND_BEV_100002, IND_BEV_100003, etc. (75,000 unique values)
+Example: IND_BEV_123456
+Why important: Helps track and identify individual charging sessions for analysis and debugging
+Real impact: Essential for joining data, tracking user behavior patterns, and ensuring no duplicate records in your ML model
+-----------------------------------------------------------------------------------------------------------------------------
+
+2. vehicle_id
+Simple explanation: Anonymous identifier for each electric vehicle
+Categorical/Numerical: Categorical
+Unique_values: TAT1234, MAH5678, OLA9876, HYU4567, etc. (format: 3-letter make + 4 digits)
+Example: TAT1234 (represents a Tata vehicle)
+Why important: Links multiple charging sessions to same vehicle for behavioral analysis
+Real impact: Enables tracking vehicle-specific charging patterns, battery degradation over time, and personalized charging time predictions
+------------------------------------------------------------------------------------------------------------------------
+
+3. user_id
+Simple explanation: Anonymous identifier for each EV user/owner
+Categorical/Numerical: Categorical
+Unique_values: USR_12345, USR_67890, USR_54321, etc. (format: USR_ + 5 digits)
+Example: USR_45678
+Why important: Connects charging behavior to individual users across different vehicles and sessions
+Real impact: Helps predict user preferences (fast vs slow charging), typical charging times, and personalized recommendations for your ML model
+-------------------------------------------------------------------------------------------------------------------------
+
+4. start_time
+Simple explanation: Date and time when charging session began
+Categorical/Numerical: Numerical (datetime)
+Range: 2018-01-01 06:00:00 to 2024-12-31 23:00:00
+Example: 2023-05-15 14:30:25
+Why important: Critical for time series analysis, seasonal patterns, and peak hour identification
+Real impact: Key feature for predicting charging duration based on time of day, day of week, and seasonal trends in your time series model
+-----------------------------------------------------------------------------------------------------------------------------
+
+5. end_time
+Simple explanation: Date and time when charging session ended
+Categorical/Numerical: Numerical (datetime)
+Range: 2018-01-01 06:05:00 to 2024-12-31 23:59:00 (always after start_time)
+Example: 2023-05-15 15:45:30
+Why important: Used to calculate actual charging duration and validate session completion
+Real impact: Combined with start_time, it gives you the target variable (charging_duration_min) that your ML model will predict
+----------------------------------------------------------------------------
+
+6. charging_duration_min (MSD)
+Simple explanation: Total time taken to complete the charging session (in minutes)
+Categorical/Numerical: Numerical
+Range: 5.0 to 360.0 minutes (5 minutes to 6 hours) 
+Example: 42.5 minutes
+Why important: This is your TARGET VARIABLE - what your ML model will predict
+Real impact: The main outcome you're trying to forecast; directly answers "How long will my EV take to charge?"
+-------------------------------------------------------------------------------
+
+7. energy_delivered_kwh
+Simple explanation: Amount of electrical energy actually transferred into the battery during charging
+Categorical/Numerical: Numerical
+Range: 0.5 to 80.0 kWh [Power(kw) = Energy (x) /Time (h)] : x = kwh
+Example: 18.5 kWh
+Why important: Shows actual energy consumption and helps validate charging efficiency calculations
+Real impact: Higher energy delivered usually means longer charging time; key predictor for your charging duration model
+---------------------------------------------------------------------------------------------------------------------
+
+8. vehicle_make
+Simple explanation: Brand/manufacturer of the electric vehicle
+Categorical/Numerical: Categorical
+Unique_values: Tata, Mahindra, Bajaj, Hero, TVS, Ola, Greaves, BluSmart, Hyundai, MG, BYD, Kia, Audi, BMW
+Example: Tata
+Why important: Different brands have different charging characteristics and battery technologies
+Real impact: Tata EVs might charge differently than Hyundai EVs due to different battery chemistry and charging curves
+-----------------------------------------------------------------------------------------------------
+
+9. vehicle_model
+Simple explanation: Specific model name of the electric vehicle
+Categorical/Numerical: Categorical
+Unique_values: Nexon EV, Tigor EV, S1 Pro, Kona, ZS EV, Chetak, iQube, etc. (30+ unique models)
+Example: Nexon EV
+Why important: Each model has unique battery size, charging speed capabilities, and efficiency
+Real impact: A Nexon EV (40.5 kWh) takes much longer to charge than an S1 Pro scooter (4.0 kWh)
+-----------------------------------------------------------------------------------------------------
+
+10. battery_capacity_kwh
+Simple explanation: Total energy storage capacity of the vehicle's battery pack
+Categorical/Numerical: Numerical
+Range: 1.8 to 95.0 kWh
+Example: 30.2 kWh
+Why important: Larger batteries take longer to charge and can store more energy
+Real impact: A 70 kWh battery takes roughly twice as long to charge as a 35 kWh battery, making this a crucial predictor for charging time.
+-------------------------------------------------------------------------------------------------------
+
+11. vehicle_age_years
+Simple explanation: How many years old the electric vehicle is since it was first registered
+Categorical/Numerical: Numerical
+Range: 0 to 8 years
+Example: 3 years
+Why important: Older vehicles have degraded batteries that charge slower and less efficiently
+Real impact: A 5-year-old EV might take 15-20% longer to charge than a brand new EV due to battery aging
+-------------------------------------------------------------------------------------------------------------------
+
+12. battery_health_index
+Simple explanation: Measure of how healthy/good the battery is compared to when it was new
+Categorical/Numerical: Numerical
+Range: 0.65 to 1.0 (where 1.0 = perfect new battery)
+Example: 0.85 (means 85% of original battery health)
+Why important: Degraded batteries charge slower and hold less energy, directly affecting charging time
+Real impact: Battery health of 0.75 means charging takes 25% longer and delivers less energy than a new battery .
+----------------------------------------------
+
+13. user_type
+Simple explanation: Category showing how the EV is primarily used
+Categorical/Numerical: Categorical
+Unique_values: private, fleet, taxi, ride_share, delivery, government
+Example: taxi
+Why important: Different user types have different charging urgency and patterns
+Real impact: Taxi drivers charge frequently but quickly (30-60%), while private users charge less often but fully (80-100%)
+------------------------------------------------------------
+
+14. income_bracket
+Simple explanation: Economic category of the EV user based on household income
+Categorical/Numerical: Categorical
+Unique_values: Low, Lower_Middle, Middle, Upper_Middle, High
+Example: Middle
+Why important: Income affects charging behavior - rich users prefer fast charging, poor users use slow charging
+Real impact: High income users often choose expensive DC Fast charging (30 min), while Low income users use cheap AC Slow charging (3+ hours)
+--------------------------------------------------------------------------------------
+
+15. city
+Simple explanation: Indian city where the charging session took place
+Categorical/Numerical: Categorical
+Unique_values: Mumbai, Delhi, Bengaluru, Chennai, Hyderabad, Pune, Ahmedabad, Kolkata, Jaipur, Lucknow, Kochi, Gurgaon
+Example: Bengaluru
+Why important: Different cities have different climate, infrastructure quality, and user behavior
+Real impact: Delhi (extreme weather) vs Bengaluru (moderate climate) affects charging speed; Mumbai (better grid) vs Lucknow (frequent outages) affects charging reliability.
+
+------------------------------------------------------------------------------------
+16. state
+Simple explanation: Indian state where the charging session occurred
+Categorical/Numerical: Categorical
+Unique_values: Maharashtra, Delhi, Karnataka, Tamil Nadu, Telangana, Gujarat, West Bengal, Rajasthan, Uttar Pradesh, Kerala, Haryana
+Example: Maharashtra
+Why important: Different states have different EV policies, electricity tariffs, and grid reliability
+Real impact: Gujarat has cheaper electricity (₹6/kWh) vs Maharashtra (₹9/kWh), and different states have different FAME II subsidy implementations affecting user behavior
+
+----------------------------------------------------------------------------------------
+17. latitude
+Simple explanation: GPS coordinate showing north-south position of the charging station
+Categorical/Numerical: Numerical
+Range: 9.93 to 28.61 (covering India from Kerala to Delhi)
+Example: 19.0760 (Mumbai area)
+Why important: Geographic location affects climate, which impacts battery performance and charging speed
+Real impact: Southern latitudes (Chennai: 13.08) have more stable temperatures year-round vs northern latitudes (Delhi: 28.61) with extreme seasonal variations affecting charging
+
+--------------------------------------------------------------------------------------------
+18. longitude
+Simple explanation: GPS coordinate showing east-west position of the charging station
+Categorical/Numerical: Numerical
+Range: 72.57 to 88.36 (covering India from Gujarat to West Bengal)
+Example: 72.8777 (Mumbai area)
+Why important: Combined with latitude, provides exact location for geographic and climate analysis
+Real impact: Western coastal areas (Mumbai: 72.88) have high humidity affecting battery cooling vs inland areas (Delhi: 77.21) with dry heat
+----------------------------------------------------------------------------------------------
+
+19. charging_station_id
+Simple explanation: Unique identifier for each charging station location
+Categorical/Numerical: Categorical
+Unique_values: MUM_1234, DEL_5678, BEN_9012, etc. (format: City3letters_4digits)
+Example: BEN_3456 (Bengaluru station)
+Why important: Links charging sessions to specific station infrastructure and performance characteristics
+Real impact: Some stations have better equipment, higher uptime, and faster charging speeds; helps identify station-specific charging time patterns
+----------------------------------------------------------------------------------------------------------------
+
+20. station_operator
+Simple explanation: Company that owns and operates the charging station
+Categorical/Numerical: Categorical
+Unique_values: Tata Power, Adani Total, EESL, ChargeZone, Fortum, IOCL, BPCL, HPCL, Shell, Ola Electric, Ather
+Example: Tata Power
+Why important: Different operators have different equipment quality, maintenance standards, and charging speeds
+Real impact: Tata Power stations typically have 95%+ uptime and fast charging, while smaller operators might have more frequent breakdowns affecting charging duration
+---------------------------------------------------------------------------------------------------------------
+
+21. charger_type
+Simple explanation: Type of charger used in the charging session, indicating charging speed category
+Categorical/Numerical: Categorical
+Unique_values: AC_Slow, AC_Fast, DC_Fast
+Example: DC_Fast
+Why important: Different charger types have different power outputs affecting charging duration
+Real impact: DC_Fast chargers can charge a battery much faster than AC_Slow chargers, significantly reducing charging time
+-------------------------------------------------------------------------------------------------------
+
+22. charger_power_kw
+Simple explanation: Power rating of the charger in kilowatts (kW), indicating how fast it can charge
+Categorical/Numerical: Numerical
+Range: 3.3 to 150 kW
+Example: 50.0
+Why important: Higher power means faster charging, directly influencing charging duration
+Real impact: A 50 kW charger can charge a vehicle much faster than a 7 kW charger, reducing charging time significantly
+------------------------------------------------------------------------------------------------------
+
+23. plug_type
+Simple explanation: Type of plug/connector used for charging, following standards
+Categorical/Numerical: Categorical
+Unique_values: Type2, CCS2, CHAdeMO, Bharat AC001, Bharat DC001
+Example: Type2
+Why important: Different plug types are compatible with different vehicles and chargers, affecting charging availability and speed
+Real impact: Using an incompatible plug type can prevent charging or require adapters, affecting user experience and charging time. 
+-------------------------------------------------------------------------------------------------
+
+24. initial_soc_percent
+Simple explanation: Battery state of charge (SOC) percentage at the start of the charging session
+Categorical/Numerical: Numerical
+Range: 10 to 60% typically
+Example: 25
+Why important: Initial SOC determines how much charging is needed, influencing session duration
+Real impact: A low initial SOC means longer charging time; a high initial SOC means shorter charging time.
+----------------------------------------------------------------------------------------------------------
+
+25. final_soc_percent
+Simple explanation: Battery state of charge (SOC) percentage at the end of the charging session
+Categorical/Numerical: Numerical
+Range: 40 to 100% typically
+Example: 85
+Why important: Final SOC indicates how much the battery was charged during the session
+Real impact: Higher final SOC means more energy delivered and longer charging duration. 
+-------------------------------------------------------------------------------------------------------------
+
+26. soc_gained_percent
+Simple explanation: How much battery charge percentage was gained during the charging session
+Categorical/Numerical: Numerical
+Range: 20 to 70% typically (calculated as final_soc - initial_soc)
+Example: 60 (means battery charged from 25% to 85%)
+Why important: Directly shows charging progress and is key predictor for charging duration
+Real impact: Higher SOC gain means longer charging time; 60% SOC gain takes much longer than 30% SOC gain
+-------------------------------------------------------------------------------------------------------------
+
+27. day_of_week
+Simple explanation: Day of the week when the charging session occurred
+Categorical/Numerical: Categorical
+Unique_values: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+Example: Wednesday
+Why important: Different days have different charging patterns due to work schedules and travel behavior
+Real impact: Weekdays have peak morning/evening charging for commuters; weekends have more leisure travel charging patterns
+-------------------------------------------------------------
+
+28. hour_of_day
+Simple explanation: Hour of the day (0-23 format) when charging session started
+Categorical/Numerical: Numerical
+Range: 0 to 23 (24-hour format)
+Example: 14 (2:00 PM)
+Why important: Time of day affects grid load, electricity tariffs, and user urgency
+Real impact: Peak hours (18-23) have higher tariffs and grid stress, potentially affecting charging speed; off-peak hours have faster charging.
+-----------------------------------------------------------------------------------------
+
+29. month
+Simple explanation: Month of the year (1-12) when charging session occurred
+Categorical/Numerical: Numerical
+Range: 1 to 12 (January to December)
+Example: 5 (May)
+Why important: Monthly patterns show seasonal trends affecting battery performance and user behavior
+Real impact: Summer months (April-June) have extreme heat affecting charging efficiency; winter months have better battery performance.
+---------------------------------------------------------------------------------------------
+
+30. season
+Simple explanation: Season during which the charging session took place
+Categorical/Numerical: Categorical
+Unique_values: Summer, Monsoon, Post_Monsoon, Winter
+Example: Summer
+Why important: Seasons dramatically affect temperature, humidity, and battery charging characteristics
+Real impact: Summer heat reduces charging speed by 10-15%; Winter provides optimal charging conditions; Monsoon affects grid reliability. 
+-------------------------------------------------------------------------------------------------------
+
+31. is_weekend
+Simple explanation: Boolean indicator showing if the charging session occurred on weekend (Saturday/Sunday)
+Categorical/Numerical: Categorical
+Unique_values: True, False
+Example: True
+Why important: Weekend charging patterns differ from weekday patterns due to leisure vs work travel
+Real impact: Weekend sessions tend to be longer and less urgent; weekday sessions are often quick top-ups for commuting.
+------------------------------------------------------------------------------------------------------
+
+32. is_peak_hour
+Simple explanation: Boolean indicator showing if charging occurred during electricity peak hours (7-10am, 6-11pm)
+Categorical/Numerical: Categorical
+Unique_values: True, False
+Example: True
+Why important: Peak hours have higher electricity tariffs and greater grid stress affecting charging speed
+Real impact: Peak hour charging costs 20% more and may be slower due to grid congestion; off-peak charging is faster and cheaper. 
+------------------------------------------------------------------------------------------------------------
+
+33. festival
+Simple explanation: Indian festival occurring during the charging session, affecting travel patterns
+Categorical/Numerical: Categorical
+Unique_values: Diwali, Holi, Eid, Christmas, Dussehra, Navratri, Ganesh_Chaturthi, None
+Example: Diwali
+Why important: Festival periods see increased travel and different charging behavior
+Real impact: During Diwali, users charge to 100% for long-distance family visits; normal days see routine 60-80% charging
+---------------------------------------------------------------------------
+
+34. ambient_temperature_c
+Simple explanation: Outside air temperature in Celsius when charging session occurred
+Categorical/Numerical: Numerical
+Range: 8 to 45°C (Indian climate range)
+Example: 35.2
+Why important: Extreme temperatures significantly affect battery performance and charging speed
+Real impact: At 42°C summer heat, charging slows by 15%; at 12°C winter cold, charging efficiency improves but may need battery heating
+--------------------------------------------------------------------
+
+35. humidity_percent
+Simple explanation: Air moisture percentage during the charging session
+Categorical/Numerical: Numerical
+Range: 20 to 95%
+Example: 75.5
+Why important: High humidity affects cooling systems and electrical equipment performance
+Real impact: 90% humidity (monsoon) can reduce charger efficiency and increase charging time due to equipment thermal stress
+--------------------------------------------------------------------------------------------------------------------------
+
+36. weather_condition
+Simple explanation: Weather conditions during the charging session
+Categorical/Numerical: Categorical
+Unique_values: Clear, Partly_Cloudy, Cloudy, Light_Rain, Heavy_Rain, Thunderstorm, Fog, Dust_Storm, Heatwave
+Example: Clear
+Why important: Weather affects battery performance, user urgency, and charging infrastructure reliability
+Real impact: Heavy_Rain or Thunderstorm can interrupt charging due to power cuts; Heatwave reduces charging speed by 10-15%
+-----------------------------------------------------------------------
+
+37. air_quality_index
+Simple explanation: Air pollution level (AQI) at the charging location during the session
+Categorical/Numerical: Numerical
+Range: 40 to 370 (Indian AQI scale)
+Example: 150 (Moderate pollution)
+Why important: High pollution affects equipment performance and user behavior patterns
+Real impact: AQI >300 (Severe) can reduce charger efficiency and prompt users to charge quickly to avoid prolonged outdoor exposure.
+---------------------------------------------------------------------------------------------
+
+38. battery_temperature_c
+Simple explanation: Internal temperature of the vehicle's battery pack during charging
+Categorical/Numerical: Numerical
+Range: 10 to 50°C (typically 3-20°C higher than ambient temperature)
+Example: 38.5
+Why important: Battery temperature directly controls charging speed for safety and efficiency
+Real impact: Above 40°C, charging speed automatically reduces by 20-30%; below 15°C, charging may be slower until battery warms up. 
+---------------------------------------------------------------------------------------
+
+The electrical grid is the big network of power lines, substations, and power plants that brings electricity from power stations to your home, office, and EV charging stations
+When you plug your EV into a charging station, the electricity comes through the grid - from a coal/solar/wind power plant → through transmission lines → to the charging station → to your car battery.
+If the grid is unstable (low frequency, power cuts, poor quality), your EV will charge slower or stop charging completely.
+During load shedding (power cuts), charging_duration_min increases because charging gets interrupted.
+-----------------------------------------------------------------------------------------------------------
+
+
+39. grid_frequency_hz
+Simple explanation: Electrical grid frequency stability during charging (should be 50 Hz in India)
+Categorical/Numerical: Numerical
+Range: 49.0 to 51.0 Hz
+Example: 49.8
+Why important: Grid instability affects charging equipment performance and safety
+Real impact: Frequency below 49.5 Hz can cause chargers to reduce power or shut down for protection, increasing charging time. 
+---------------------------------------------------------------------------------
+
+40. grid_reliability_index
+Simple explanation: Measure of how dependable the electrical grid is at the charging location
+Categorical/Numerical: Numerical
+Range: 0.5 to 0.99 (where 1.0 = perfect reliability)
+Example: 0.92 (92% reliable)
+Why important: Poor grid reliability leads to charging interruptions and longer session times
+Real impact: 0.75 reliability means 25% chance of power interruption, potentially doubling charging time due to restarts
+---------------------------------------------------------------------------------------
+
+41. power_quality_score
+Simple explanation: Measure of how stable and clean the electrical power supply is at the charging station
+Categorical/Numerical: Numerical
+Range: 0.3 to 1.0 (where 1.0 = perfect power quality)
+Example: 0.85 (good quality power)
+Why important: Poor power quality can damage charging equipment and slow down charging speed
+Real impact: Power quality below 0.8 causes chargers to reduce power automatically for safety, increasing charging time by 15-25%. 
+--------------------------------------------------------------------------------------------
+
+42. load_shedding_event
+Simple explanation: Whether there was a planned power cut during the charging session
+Categorical/Numerical: Categorical
+Unique_values: Yes, No
+Example: No
+Why important: Load shedding interrupts charging, forcing users to restart sessions
+Real impact: "Yes" means charging was interrupted for 1-8 hours (common in rural India), significantly increasing total session time.
+-----------------------------------------------------------------------------------------------
+
+43. grid_load_mw
+Simple explanation: Amount of electrical demand the power grid is handling during charging (in Megawatts)
+Categorical/Numerical: Numerical
+Range: 0.8 to 4.2 MW
+Example: 2.5 MW
+Why important: High grid demand reduces available power for individual chargers
+Real impact: Above 3.5 MW grid load can reduce charging speed by 20% during peak hours due to power sharing. 
+------------------------------------------------------------------------------------------
+
+44. tariff_per_kwh_inr
+Simple explanation: Cost of electricity per kilowatt-hour in Indian Rupees during the charging session
+Categorical/Numerical: Numerical
+Range: ₹6 to ₹15 per kWh
+Example: ₹8.50
+Why important: Higher tariffs influence user behavior - quick charging vs full charging decisions
+Real impact: ₹12/kWh tariff makes users charge quickly (30-60 min); ₹6/kWh allows leisurely full charging (2+ hours)
+-------------------------------------------------------------------------------------------------------
+
+45. total_cost_inr
+Simple explanation: Total amount paid for the entire charging session in Indian Rupees
+Categorical/Numerical: Numerical
+Range: ₹20 to ₹800 (calculated as energy_delivered × tariff_per_kwh)
+Example: ₹157.25
+Why important: Total cost affects user satisfaction and willingness to use specific charging stations
+Real impact: Sessions costing >₹500 create cost anxiety, leading users to stop charging early and reducing final SOC.
+-----------------------------------------------------------------------------------------------------------
+
+46. subsidy_amount_inr
+Simple explanation: Government subsidy amount in Indian Rupees that the user received for this charging session under FAME II scheme
+Categorical/Numerical: Numerical
+Range: ₹0 to ₹20,000 (based on FAME II scheme guidelines)
+Example: ₹15,000
+Why important: Subsidies reduce effective charging costs, influencing user behavior and charging frequency
+Real impact: ₹15,000 subsidy makes users more likely to charge fully and frequently, potentially increasing charging duration per session.
+-------------------------------------------------------------------------------------------------------------
+
+47. payment_method
+Simple explanation: How the user paid for the charging session
+Categorical/Numerical: Categorical
+Unique_values: UPI, Card, Wallet, Cash, RFID, Mobile_App, Subscription
+Example: UPI
+Why important: Different payment methods have different success rates and processing times affecting session completion
+Real impact: UPI payments (dominant in India) are faster; Card payments may fail more often, causing session delays.
+----------------------------------------------------------------------------------------------------------------
+
+48. payment_success_rate
+Simple explanation: Percentage showing how often payments succeed at this station/operator
+Categorical/Numerical: Numerical
+Range: 0.92 to 0.99 (92% to 99% success rate)
+Example: 0.96 (96% success rate)
+Why important: Payment failures cause charging interruptions and frustrated users who may restart sessions
+Real impact: 92% success rate means 8% of sessions fail due to payment issues, requiring restarts and increasing total charging time.
+------------------------------------------------------------------------------------------------------------------
+
+49. station_congestion_level
+Simple explanation: How busy/crowded the charging station is during the session
+Categorical/Numerical: Categorical
+Unique_values: Low, Medium, High
+Example: Medium
+Why important: Congested stations have queues and potentially reduced charging speeds due to power sharing
+Real impact: "High" congestion means users wait 10-30 minutes before charging starts, plus possible slower charging speeds.
+------------------------------------------------------------------------------------------------------------------------------
+
+50. queue_wait_time_min
+Simple explanation: Time in minutes the user had to wait in queue before starting to charge
+Categorical/Numerical: Numerical
+Range: 0 to 45 minutes (0 for Low congestion, up to 45 for High congestion)
+Example: 12.5 minutes
+Why important: Wait time adds to total session duration and affects user satisfaction
+Real impact: 20-minute queue wait significantly increases total time spent at station, affecting user's willingness to charge fully vs quickly.
+----------------------------------------------------------------------------------------------------------------------------
+
+51. charger_utilization_rate
+Simple explanation: Shows how busy/frequently used a charging station is, measured as usage rate per day
+Categorical/Numerical: Numerical
+Range: 0.3 to 0.95 (30% to 95% utilization rate)
+Example: 0.75 (means station is used 75% of available time)
+Why important: High utilization stations may have equipment wear and longer queues affecting charging time
+Real impact: 0.9 utilization rate means very popular station with potential queues; 0.3 means underused station with immediate availability.
+----------------------------------------------------------------------------------------------------------------------------
+
+52. station_uptime_percent
+Simple explanation: Percentage of time the charging station is operational and working properly
+Categorical/Numerical: Numerical
+Range: 85% to 98%
+Example: 95.5% (station works 95.5% of the time)
+Why important: Low uptime stations have frequent breakdowns causing charging interruptions
+Real impact: 87% uptime means 13% chance of equipment failure during your session, potentially doubling charging time due to restarts.
+----------------------------------------------------------------------------------------------------------------------------------
+
+53. charging_efficiency_percent
+Simple explanation: How much of the grid electricity actually gets stored in the battery (energy conversion efficiency)
+Categorical/Numerical: Numerical
+Range: 85% to 95%
+Example: 91.2% (means 91.2% of power goes to battery, 8.8% lost as heat)
+Why important: Lower efficiency means more energy waste and potentially longer charging for same SOC gain
+Real impact: 85% efficiency vs 95% efficiency means 10% more time and cost needed to achieve same battery charge level
+-------------------------------------------------------------------------------------------------------------------------------
+
+54. charging_curve_efficiency
+Simple explanation: How smoothly the battery charges throughout the session without significant slowdowns
+Categorical/Numerical: Numerical
+Range: 0.88 to 0.96 (where 1.0 = perfect curve)
+Example: 0.92 (good charging curve with minimal slowdown)
+Why important: Poor charging curves cause significant slowdowns at high SOC levels (80-100%)
+Real impact: 0.88 curve efficiency means charging slows dramatically after 75% SOC, adding 20-30 minutes for full charge.
+--------------------------------------------------------------------------------------------------------------------------------------
+
+55. cooling_system_active
+Simple explanation: Whether the battery cooling system was activated during charging
+Categorical/Numerical: Categorical
+Unique_values: Yes, No
+Example: Yes
+Why important: Active cooling allows faster charging without overheating; inactive cooling limits charging speed
+Real impact: "Yes" enables full-speed charging even in hot weather; "No" means charging speed reduced by 15-25% to prevent overheating. 
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+56. thermal_management
+Simple explanation: Type of temperature control system used during charging to keep battery at optimal temperature
+Categorical/Numerical: Categorical
+Unique_values: Active, Passive
+Example: Active
+Why important: Active thermal management allows faster charging by preventing overheating; passive systems limit charging speed
+Real impact: "Active" enables full-speed DC Fast charging even in 45°C heat; "Passive" reduces charging speed by 30% in hot weather
+------------------------------------------------------------------------------------------------------------------------------------------
+
+57. app_reliability_rating
+Simple explanation: Rating of how well the charging station's mobile app works for users
+Categorical/Numerical: Categorical
+Unique_values: Excellent, Good, Average, Poor
+Example: Good
+Why important: Poor app performance causes delays in finding stations, authentication, and payment processing
+Real impact: "Poor" app adds 10-15 minutes to session time due to crashes and payment failures; "Excellent" enables seamless charging
+------------------------------------------------------------------------------------------------------------------------------------------
+
+58. session_success_rate
+Simple explanation: Percentage of charging sessions that complete successfully without technical failures
+Categorical/Numerical: Numerical
+Range: 0.94 to 0.99 (94% to 99%)
+Example: 0.97 (97% success rate)
+Why important: Low success rates mean higher chance of charging interruptions requiring session restarts
+Real impact: 0.94 success rate = 6% chance your charging fails and needs restart, potentially doubling total session time
+------------------------------------------------------------------------------------------------------------------------------------------
+
+59. user_satisfaction_score
+Simple explanation: User rating of their overall charging experience at this station (1-5 scale)
+Categorical/Numerical: Numerical
+Range: 3.2 to 4.8 out of 5.0
+Example: 4.2 (good satisfaction)
+Why important: Low satisfaction indicates station problems affecting charging experience and user behavior
+Real impact: Score below 3.5 suggests equipment issues, slow charging, or poor amenities affecting user willingness to charge fully
+------------------------------------------------------------------------------------------------------------------------------------------
+
+60. trip_purpose
+Simple explanation: Reason why the user is making this journey that requires charging
+Categorical/Numerical: Categorical
+Unique_values: Commute, Personal, Business, Tourism, Emergency, Shopping
+Example: Commute
+Why important: Different trip purposes have different charging urgency and time constraints
+Real impact: "Emergency" trips charge quickly (30-60%); "Tourism" trips charge fully (90-100%) for long-distance travel
+------------------------------------------------------------------------------------------------------------------------------------------
+
+61. distance_to_station_km
+Simple explanation: How far the user traveled from their starting point to reach this charging station
+Categorical/Numerical: Numerical
+Range: 0.5 to 15 km typically
+Example: 5.8 km
+Why important: Users who travel farther to charge tend to charge longer to justify the detour
+Real impact: 12 km distance means user likely charges to 90%+ SOC; 2 km distance allows quick 60-70% top-up charging
+------------------------------------------------------------------------------------------------------------------------------------------
+
+62. range_remaining_km
+Simple explanation: How many kilometers the EV could still travel before battery dies (at start of charging)
+Categorical/Numerical: Numerical
+Range: 10 to 200 km typically
+Example: 45 km
+Why important: Low remaining range creates urgency for faster/longer charging due to range anxiety
+Real impact: 20 km remaining = urgent DC Fast charging to 80%+; 150 km remaining = casual AC charging to 60-70%
+------------------------------------------------------------------------------------------------------------------------------------------
+
+63. next_destination_distance_km
+Simple explanation: Distance from charging station to where the user plans to go after charging
+Categorical/Numerical: Numerical
+Range: 5 to 100+ km (some missing values)
+Example: 35.7 km
+Why important: Longer planned trips require higher final SOC, increasing charging duration
+Real impact: 200 km next trip = charge to 95-100% SOC; 15 km next trip = charge to 60-70% SOC
+------------------------------------------------------------------------------------------------------------------------------------------
+
+64. state_ev_policy
+Simple explanation: State-specific electric vehicle promotion policy applicable during this charging session
+Categorical/Numerical: Categorical
+Unique_values: Maharashtra_EV_Policy_2023, Delhi_EV_Policy_2023, Karnataka_EV_Policy_2023, etc.
+Example: Karnataka_EV_Policy_2023
+Why important: Different state policies offer different incentives affecting user charging behavior and costs
+Real impact: States with generous policies encourage more frequent charging; restrictive policies lead to conservative charging patterns
+------------------------------------------------------------------------------------------------------------------------------------------
+
+65. charging_standard_compliance
+Simple explanation: Technical safety and quality standard that the charging equipment follows
+Categorical/Numerical: Categorical
+Unique_values: IS_17017_Compliant
+Example: IS_17017_Compliant
+Why important: Compliance ensures safe, reliable charging and compatibility across different EV brands
+Real impact: Non-compliant stations may have safety issues or incompatibility problems, affecting charging success and speed
+-----------------------------------------------------------------------------------------------------------------------
+
+66. safety_certification
+Simple explanation: Safety certification status of the charging station equipment
+Categorical/Numerical: Categorical
+Unique_values: BIS_Certified
+Example: BIS_Certified
+Why important: Safety certification ensures equipment meets Indian safety standards and reduces risk of accidents
+Real impact: Certified stations have lower failure rates and safer charging; non-certified stations may have safety issues affecting charging reliability
+-----------------------------------------------------------------------------------------------------------------------
+
+67. session_type
+Simple explanation: Whether the charging session was planned in advance or done opportunistically
+Categorical/Numerical: Categorical
+Unique_values: Scheduled, Opportunistic, Emergency
+Example: Opportunistic
+Why important: Different session types reflect different user urgency and charging duration preferences
+Real impact: "Emergency" sessions are quick (30-45 min); "Scheduled" sessions are often full charges (60-180 min)
+-----------------------------------------------------------------------------------------------------------------------
+
+68. booking_lead_time_min
+Simple explanation: How many minutes in advance the user booked this charging session (if pre-booked)
+Categorical/Numerical: Numerical
+Range: 0 to 120 minutes (some missing values for walk-in sessions)
+Example: 45 minutes
+Why important: Advance booking suggests planned charging with potentially longer duration; walk-ins are often quick charges
+Real impact: 60+ minute advance booking often means leisurely full charging; 0 minutes (walk-in) usually means quick top-up
+-----------------------------------------------------------------------------------------------------------------------
+
+69. session_rating
+Simple explanation: User's rating of this specific charging session experience (1-5 scale)
+Categorical/Numerical: Numerical
+Range: 3.5 to 5.0
+Example: 4.3
+Why important: Low ratings indicate problems during charging that may have affected session duration or success
+Real impact: Rating below 3.8 suggests charging issues, equipment problems, or delays that increased total session time
+-----------------------------------------------------------------------------------------------------------------------
+
+70. energy_efficiency_kwh_per_100km
+Simple explanation: Vehicle's energy consumption efficiency (how much electricity needed to travel 100 kilometers)
+Categorical/Numerical: Numerical
+Range: 12 to 20 kWh per 100km
+Example: 16.5 kWh/100km
+Why important: More efficient vehicles need less energy for same distance, affecting charging frequency and duration
+Real impact: 12 kWh/100km vehicle charges less frequently; 20 kWh/100km vehicle needs more frequent, longer charging sessions
+-----------------------------------------------------------------------------------------------------------------------
+
+71. week_of_year
+Simple explanation: Week number (1-53) of the year when charging session occurred
+Categorical/Numerical: Numerical
+Range: 1 to 53
+Example: 23 (23rd week of the year)
+Why important: Enables weekly pattern analysis for time series modeling and seasonal trend identification
+Real impact: Certain weeks (holidays, festivals) show different charging patterns affecting duration and frequency
+-----------------------------------------------------------------------------------------------------------------------
+
+72. day_of_year
+Simple explanation: Day number (1-366) of the year when charging session occurred
+Categorical/Numerical: Numerical
+Range: 1 to 366
+Example: 158 (158th day of the year)
+Why important: Provides fine-grained temporal analysis for daily seasonal patterns and trends
+Real impact: Specific days (festival dates, extreme weather days) have unique charging behavior affecting session duration
+-----------------------------------------------------------------------------------------------------------------------
+
+73. is_month_end
+Simple explanation: Boolean indicator showing if charging occurred in the last few days of the month
+Categorical/Numerical: Categorical
+Unique_values: True, False
+Example: True
+Why important: Month-end periods may show different user behavior due to salary cycles and budget constraints
+Real impact: Month-end sessions might be shorter due to budget concerns; month-beginning sessions might be longer
+-----------------------------------------------------------------------------------------------------------------------
+
+74. is_quarter_end
+Simple explanation: Boolean indicator showing if charging occurred in the last few days of a business quarter
+Categorical/Numerical: Categorical
+Unique_values: True, False
+Example: False
+Why important: Quarter-end periods may affect business users and fleet operators differently
+Real impact: Quarter-end may show increased business travel requiring longer charging sessions for extended trips
+
+------------------------------------------
+1.Your dataset contains 75,000 charging session records from Indian Battery Electric Vehicles spanning 2018-2024. 
+2.It simulates real-world EV charging behavior across 12 major Indian cities, covering all aspects of the charging ecosystem - from technical specifications to user behavior, grid conditions, and policy impacts. 
+3.This is a research-grade  dataset specifically designed for charging time prediction using time series methods.
+
+
+-------------------------------------------------------------------------------
+Detailed Analysis of Every Column
+1.Core Session Data (7 columns)
+2.session_id: Unique identifier for each charging event (IND_BEV_100001 format)
+3.vehicle_id: Anonymous vehicle identifier (TAT1234 format)
+4.user_id: Anonymous user identifier for tracking behavior patterns
+5.start_time: When charging began (YYYY-MM-DD HH:MM:SS format)
+6.end_time: When charging ended
+7.charging_duration_min: TARGET VARIABLE - Time taken to charge (5-360 minutes) [Important column]
+8.energy_delivered_kwh: Actual energy transferred to the battery (0.5-80 kWh range)
+Power = Energy/time ------> Energy = Power*time   
+
+
+------------------------------------------------------------------------------
+Vehicle Characteristics (5 columns)
+9.vehicle_make: Indian & international brands (Tata, Mahindra, Ola, Hyundai, etc.)
+10.vehicle_model: Specific models (Nexon EV, S1 Pro, Kona, etc.)
+11.battery_capacity_kwh: Battery size (1.8-95 kWh based on real specifications) [Energy /Time = Power]
+12.vehicle_age_years: Age affecting battery performance (0-8 years)
+13.battery_health_index: Degradation factor (0.65-1.0, decreases with age) *** explanation below ***
+[battery_health_index : A number that shows how "healthy" or "good" the battery is compared to when it was new. 
+Older batteries charge slower and hold less energy, so this affects your charging time prediction.
+If battery health = 0.8, the battery only charges to 80% of its original speed/capacity.
+New car battery: battery_health_index = 1.0 (100% healthy)
+3-year-old car battery: battery_health_index = 0.85 (85% healthy)
+Old degraded battery: battery_health_index = 0.70 (70% healthy)]
+
+---------------------------------------------------------------------------------------------
+User Profile (2 columns)
+14.user_type: Usage pattern (private, fleet, taxi, ride_share, delivery, government)
+15.income_bracket: Economic segment (Low, Lower_Middle, Middle, Upper_Middle, High) ***explanation***
+[income_bracket : Shows which economic group the EV user belongs to based on their household income.
+Low: Family earning ₹2-3 lakhs/year
+Middle: Family earning ₹8-12 lakhs/year
+High: Family earning ₹25+ lakhs/year
+Rich people and poor people have different charging habits - rich users might charge fully every time, poor users might charge just enough.
+High income users may prefer expensive DC Fast charging for convenience, while Low income users use cheaper AC Slow charging.]
+
+------------------------------------------------------------------------------------------------
+Location & Infrastructure (8 columns)
+16.city: 12 major Indian cities with different characteristics
+17.state: Indian states with specific EV policies
+18.latitude/longitude: GPS coordinates for geographic analysis
+19.charging_station_id: Station identifier (MUM_1234 format)
+20.station_operator: CPO companies (Tata Power, EESL, Fortum, etc.)
+21.charger_type: Speed categories (AC_Slow, AC_Fast, DC_Fast)
+22.charger_power_kw: Actual power rating (3.3-150 kW range) [Unit of power is kw] ***explanation***
+[charger_power_kw: Shows how powerful the charging station is - basically how fast it can pump electricity into the car battery.
+Higher kW = faster charging = shorter charging_duration_min (your target variable)]
+23.plug_type: Connector standards (Type2, CCS2, Bharat AC001, etc.)
+
+
+----------------------------------------------------------------------------------------------
+State of Charge (SOC) Data (3 columns)
+24.initial_soc_percent: Battery level at start (10-60% range)
+25.final_soc_percent: Battery level at end (40-100% range)
+26.soc_gained_percent: Charging increase (calculated field) [soc_gained_percent = final_soc_percent-initial_soc_percent]
+
+
+----------------------------------------------------------------------------------------------
+Temporal Features (10 columns)
+27.day_of_week: Monday through Sunday
+28.hour_of_day: 0-23 hour format
+29.month: 1-12 for seasonal analysis
+30.season: Summer, Monsoon, Post_Monsoon, Winter
+31.is_weekend: Boolean for weekend patterns
+32.is_peak_hour: Peak electricity hours (7-10am, 6-11pm)
+33.festival: Major Indian festivals affecting travel patterns
+34.week_of_year: 1-53 for time series analysis
+35.day_of_year: 1-366 for seasonal modeling
+36.is_month_end/is_quarter_end: Business cycle indicators
+
+
+-------------------------------------------------------------------------------------------------
+Environmental Conditions (5 columns)
+37.ambient_temperature_c: Outside temperature (8-45°C based on IMD data)***explanation***
+ambient_temperature_c : The outside air temperature (in Celsius) when the charging session happened.
+38.humidity_percent: Moisture levels (20-95% by season/city)
+39.weather_condition: 9 categories from Clear to Heatwave
+40.air_quality_index: Pollution levels (40-370 AQI based on CPCB data)
+41.battery_temperature_c: Internal battery heat affecting charging ***explanation***
+battery_temperature_c : The internal temperature of the battery pack (in Celsius) during charging - different from outside air temperature.
+
+
+--------------------------------------------------------------------------------------------------
+The electrical grid is the big network of power lines, substations, and power plants that brings electricity from power stations to your home, office, and EV charging stations
+When you plug your EV into a charging station, the electricity comes through the grid - from a coal/solar/wind power plant → through transmission lines → to the charging station → to your car battery.
+If the grid is unstable (low frequency, power cuts, poor quality), your EV will charge slower or stop charging completely.
+During load shedding (power cuts), charging_duration_min increases because charging gets interrupted.
+Grid & Power Conditions (5 columns)
+42.grid_frequency_hz: Power grid stability (49-51 Hz as per Grid Code)
+43.grid_reliability_index: Infrastructure quality (0.5-0.99 by region)
+44.power_quality_score : Electrical stability metric
+45.load_shedding_event: Power cuts (Yes/No - more common in some states)
+46.grid_load_mw: Grid stress levels (0.8-4.2 MW range)
+
+
+---------------------------------------------------------------------------------------------------
+Economic Factors (5 columns)
+47.tariff_per_kwh_inr: Electricity price (₹6-15 per kWh by state/time)
+48.total_cost_inr: Session cost (energy × tariff)
+49.subsidy_amount_inr: FAME II scheme benefits (₹0-20,000)
+50.payment_method: 7 payment options (UPI dominant in India)
+51.payment_success_rate: Transaction reliability (92-99%)
+
+
+---------------------------------------------------------------------------------------------------
+Infrastructure Status (4 columns)
+52.station_congestion_level: Queue conditions (Low/Medium/High)
+53.queue_wait_time_min: Waiting time before charging
+54.charger_utilization_rate: Station usage efficiency ***explanation***
+[Shows how busy/popular a charging station is - basically how many charging sessions happen at that station per day]
+55.station_uptime_percent: Equipment reliability (85-98%) ***explanation***
+[Shows what percentage of time the charging station is working properly and available for use]
+
+
+---------------------------------------------------------------------------------------------------
+Advanced Performance Metrics (4 columns)
+56.charging_efficiency_percent: Energy conversion efficiency (85-95%) ***explanation***
+Shows how much of the electricity from the grid actually goes into the battery (not all electricity makes it due to energy losses).
+57.charging_curve_efficiency: Advanced charging curve  ***explanation**
+Shows how efficiently the battery charges throughout the entire charging session from start to finish (batteries don't charge at constant speed).
+Batteries charge fast when empty (20-60% SOC) but slow down when nearly full (80-100% SOC). This efficiency measures how well this transition happens
+58.cooling_system_active: Thermal management (Yes/No)
+59.thermal_management: Active/Passive cooling modes    
+
+
+------------------------------------------------------------------------------------------------
+User Experience (3 columns)
+60.app_reliability_rating: Mobile app performance (Excellent to Poor) ***explanation***
+Shows how well the mobile app (used for EV charging) works - like the Tata Power app, Ola Electric app, or charging station app that users use to find stations and start charging.
+61.session_success_rate: Successful completion rate ***explanation***
+Shows what percentage of charging sessions at that station complete successfully without any problems or interruptions.
+62.user_satisfaction_score: Experience rating (3.2-4.8/5.0)
+
+
+-----------------------------------------------------------------------------------------------------
+Additional Context (4 columns)
+63.trip_purpose: Journey type (Commute, Personal, Business, etc.)
+64.distance_to_station_km: Travel to charging point ***explanation***
+Shows how far the EV user had to travel from their starting location to reach the charging station (in kilometers)
+65.range_remaining_km: Vehicle range left ***explanation***
+Shows how many kilometers the EV can still travel with the current battery charge when the charging session started (before charging began).
+66.next_destination_distance_km: Next journey length  ***explanation***
+Shows how far (in kilometers) the EV user plans to travel to their next destination after finishing the current charging session.
+
+
+-----------------------------------------------------------------------------------------------------------
+67.Policy & Regulations (3 columns)
+68.state_ev_policy: State-specific EV promotion schemes
+69.charging_standard_compliance: Technical standards (IS 17017)
+70.safety_certification: BIS certification status
+
+
+---------------------------------------------------------------------------------------------------------------------
+Session Metadata (3 columns)
+71.session_type: Planned vs opportunistic charging
+72.booking_lead_time_min: Advance booking time
+73.session_rating: User feedback (3.5-5.0/5.0)
+
+
+-------------------------------------------------------------------------------------------------
+74. energy_efficiency_kwh_per_100km 
+--------------------------------------------------------------------------------------------------------------------
+Categorical Columns (28 columns):
+session_id
+vehicle_id
+user_id
+vehicle_make
+vehicle_model
+user_type
+income_bracket
+city
+state
+charging_station_id
+station_operator
+charger_type
+plug_type
+day_of_week
+season
+is_weekend
+is_peak_hour
+festival
+load_shedding_event
+payment_method
+station_congestion_level
+cooling_system_active
+thermal_management
+app_reliability_rating
+session_type
+state_ev_policy
+charging_standard_compliance
+safety_certification
+
+
+Numerical Columns (41 columns):
+start_time
+end_time
+charging_duration_min (TARGET VARIABLE)
+energy_delivered_kwh
+battery_capacity_kwh
+vehicle_age_years
+battery_health_index
+initial_soc_percent
+final_soc_percent
+soc_gained_percent
+hour_of_day
+month
+ambient_temperature_c
+humidity_percent
+air_quality_index
+battery_temperature_c
+grid_frequency_hz
+grid_reliability_index
+power_quality_score
+grid_load_mw
+tariff_per_kwh_inr
+total_cost_inr
+subsidy_amount_inr
+payment_success_rate
+queue_wait_time_min
+charger_utilization_rate
+station_uptime_percent
+charging_efficiency_percent
+charging_curve_efficiency
+session_success_rate
+user_satisfaction_score
+distance_to_station_km
+range_remaining_km
+next_destination_distance_km
+booking_lead_time_min
+session_rating
+energy_efficiency_kwh_per_100km
+week_of_year
+day_of_year
+is_month_end
+is_quarter_end
+Total Dataset: 69 columns (28 categorical + 41 numerical)
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+References Used in the Dataset
+Government Sources
+1. NITI Aayog EV Database
+Used for: Indian BEV manufacturers, vehicle makes and models, market share weighting
+Applied in columns: vehicle_make, vehicle_model, market share weights for vehicle selection
+
+2. Bureau of Energy Efficiency (BEE)
+Used for: Charger standards, plug types, charger utilization rates, and uptime
+Applied in columns: plug_type, charger_type, charger_power_kw, charger_utilization_rate, station_uptime_percent
+
+3. Central Electricity Authority (CEA)
+Used for: Grid data, grid frequency, grid reliability, power quality, and infrastructure statistics
+Applied in columns: grid_frequency_hz, grid_reliability_index, power_quality_score, grid_load_mw
+
+4. Indian Meteorological Department (IMD)
+Used for: Weather patterns, ambient temperature, humidity, and seasonal climate data (2018-2024)
+Applied in columns: ambient_temperature_c, humidity_percent, weather_condition, season
+
+5. VAHAN Database
+Used for: Vehicle registration data, user demographics, and user types
+Applied in columns: user_type, vehicle_age_years, user demographics distribution
+
+6. Central Pollution Control Board (CPCB)
+Used for: Air quality index data by city
+Applied in columns: air_quality_index
+
+7. FAME II Scheme Guidelines
+Used for: Subsidy calculations and eligibility
+Applied in columns: subsidy_amount_inr, subsidy eligibility logic
+
+8. State DISCOM Tariff Orders
+Used for: Electricity tariff structures by state and time
+Applied in columns: tariff_per_kwh_inr, total_cost_inr, peak hour pricing
+
+9. IS 17017 Charging Standards
+Used for: Technical specifications and charging standard compliance
+Applied in columns: charging_standard_compliance, plug_type specifications
+
+10. Grid Code Regulations
+Used for: Grid frequency and power quality standards
+Applied in columns: grid_frequency_hz (49-51 Hz range), power_quality_score standards
+
+11. SIAM Automotive Reports
+Used for: Market share, vehicle specifications, and vehicle age distributions
+Applied in columns: vehicle_make market weighting, vehicle_age_years distribution
+
+12. OEM Technical Specifications
+Used for: Battery capacities, charging power, and vehicle model details
+Applied in columns: battery_capacity_kwh, vehicle-specific technical parameters
+
+13. CPO Operational Data
+Used for: Station operators, station uptime, congestion, and queue wait times
+Applied in columns: station_operator, station_uptime_percent, station_congestion_level, queue_wait_time_min
+
+14. EY-FICCI EV Study 2023
+Used for: User behavior patterns, income brackets, and user types
+Applied in columns: user_type, income_bracket, user behavior weighting
+
+15. Indian Government Holiday Calendar
+Used for: Festival dates and public holiday indicators
+Applied in columns: festival, is_weekend, temporal patterns
+
+16. Battery Technology Papers
+Used for: Charging efficiency, battery health degradation, and temperature effects
+Applied in columns: charging_efficiency_percent, battery_health_index, temperature impact modeling
+
+17. EV User Behavior Studies
+Used for: SOC patterns, charging behavior, and session types
+Applied in columns: initial_soc_percent, final_soc_percent, session_type, user charging patterns
+
+18. Peer-reviewed Literature
+Used for: Physics-based charging time calculations and advanced modeling
+Applied in columns: charging_duration_min calculations, energy_delivered_kwh physics modeling
+
+Reference Application Summary:
+Government Sources (8): NITI Aayog, BEE, CEA, IMD, VAHAN, CPCB, FAME II, State DISCOMs
+Industry Sources (3): SIAM, OEM Specs, CPO Data
+Academic Sources (3): EY-FICCI Study, Battery Papers, Peer-reviewed Literature
+Standards Sources (4): IS 17017, Grid Code, Government Calendar, User Behavior Studies
+
+Total: 18 official references ensuring comprehensive validation of all dataset constraints and realistic value distributions.
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+Critical Points Researchers Must Understand
+A. Data Quality & Realism
+1.Physics-based calculations: Charging time derived from actual power ratings and battery physics
+2.Realistic correlations: Temperature affects charging speed, SOC influences duration
+3.Missing data: 2-3% realistic missing patterns in non-critical fields
+4.No impossible values: All ranges validated (SOC ≤100%, positive durations)
+
+B. Indian Market Specifics
+1.Market share weighting: Tata/Mahindra dominate, not Tesla/international brands
+2.Infrastructure realities: Load shedding, grid reliability issues included
+3.Cultural factors: Festival periods, monsoon patterns, peak hour differences
+4.Policy integration: State-specific incentives and regulations reflected
+
+
+C. Time Series Characteristics
+1.Seasonality: Clear summer/monsoon/winter patterns in charging behavior
+2.Weekly patterns: Weekend vs weekday differences
+3.Daily cycles: Morning and evening peak charging times
+4.Long-term trends: 7-year span captures EV adoption growth
+
+D. Feature Engineering Insights
+1.Target variable: charging_duration_min is your prediction target
+2.Key predictors: SOC delta, charger power, temperature, battery health
+3.Lag features: Previous session data can be created for time series models
+4.Categorical encoding: Many string columns need encoding for ML models
+
+E.Research Implications
+1.Sufficient scale: 75,000 records adequate for deep learning approaches
+2.Feature richness: 60+ variables enable comprehensive analysis
+3.Indian focus: Fills major gap in EV charging research literature
+4.Policy relevance: Results applicable to FAME III and state EV policies
+
+
+F. Model Development Considerations
+1.Data splitting: Use temporal splits (train: 2018-2022, test: 2023-2024)
+2.Feature importance: SHAP analysis will reveal Indian-specific factors
+3.Evaluation metrics: RMSE, MAE, MAPE for regression performance
+4.Business relevance: Focus on practical charging time prediction accuracy
