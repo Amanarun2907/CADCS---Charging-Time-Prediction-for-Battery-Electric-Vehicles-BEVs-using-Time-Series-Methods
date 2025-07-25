@@ -17,8 +17,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Only show warnings and errors (1=inf
 # Your provided GroqCloud API credentials
 GROQ_API_BASE = "https://api.groq.com/openai/v1"
 # IMPORTANT: Retrieve API key from environment variable for security and deployment
-GROQ_API_KEY = os.getenv("GROQ_API_KEY") # THIS LINE WAS MODIFIED TO REMOVE THE HARDCODED KEY
-# GROQ_API_KEY = "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"
+#GROQ_API_KEY = os.getenv("GROQ_API_KEY") # THIS LINE WAS MODIFIED TO REMOVE THE HARDCODED KEY
+GROQ_API_KEY = "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"
 GROQ_MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct"
 
 # Set API base and key for openai==0.28.0 (compatible with Groq's OpenAI-like API)
