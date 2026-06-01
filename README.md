@@ -27,7 +27,7 @@
 
 ### step 9 : finding out the best model and its parameters 
 
-### step 10 : RAG Chatbot : RAG Q&A chatbot using document retrieval and generative AI for intelligent response generation (can use any light model from hugging face or a license llm(opneai, claude, grok, gemini) if free credits available) [Interface]
+### step 10 : RAG Chatbot : RAG Q&A chatbot using document retrieval and generative AI for intelligent response generation (can use any light model from hugging face or a license llm(opneai, claude, grok, gemini) if credits available) [Interface]
 
 
 ![1753504352403](image/README/1753504352403.png)
